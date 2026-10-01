@@ -1,0 +1,169 @@
+/* ═══════════════════════════════════════════════════════════════
+   CADERNO DE ESTUDOS — guia.css
+   ───────────────────────────────────────────────────────────────
+   Mesma identidade visual do site (papel creme, terracota,
+   Fraunces + IBM Plex Mono) — o guia é da mesma família.
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --paper:#F3ECDE; --paper-2:#EAE0CC; --card:#FBF7EE; --ink:#291E12; --ink-2:#6A5945;
+  --line:rgba(41,30,18,.16); --terra:#BC4B24; --corn:#C9922C; --olive:#5F6B3C; --mata:#4F7A5A;
+  --f-display:"Fraunces",Georgia,serif;
+  --f-body:"Instrument Sans","Helvetica Neue",sans-serif;
+  --f-mono:"IBM Plex Mono",monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+button{font-family:inherit;background:none;border:none;color:inherit;cursor:pointer}
+::selection{background:var(--terra);color:var(--paper)}
+.mono{font-family:var(--f-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+em.t{font-style:italic;color:var(--terra)}
+
+/* textura de papel (igual ao site) */
+body::after{content:"";position:fixed;inset:0;z-index:9990;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+  background-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" stitchTiles="stitch"/></filter><rect width="240" height="240" filter="url(%23n)" opacity="0.6"/></svg>')}
+
+/* ═══ topo fixo: progresso de estudo + barra de leitura ═══ */
+/* (#study-bar e #read-bar recebem width via .css() no jQuery) */
+#guia-top{position:fixed;top:0;left:0;right:0;z-index:800;height:60px;display:flex;align-items:center;gap:18px;padding:0 4vw;
+  background:rgba(243,236,222,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+#guia-top .logo{font-family:var(--f-display);font-weight:600;white-space:nowrap}
+#guia-top .logo em{color:var(--terra);font-style:italic}
+#study-count{color:var(--terra);white-space:nowrap}
+#study-track{flex:1;height:6px;background:var(--paper-2);border:1px solid var(--line);border-radius:99px;overflow:hidden}
+#study-bar{height:100%;width:0;background:var(--olive);transition:width .5s var(--ease)}
+#read-bar{position:fixed;top:60px;left:0;height:3px;width:0;background:var(--terra);z-index:801}
+
+/* ═══ layout: índice lateral + capítulos ═══ */
+.layout{display:grid;grid-template-columns:250px 1fr;gap:clamp(30px,4vw,70px);width:min(1200px,94vw);margin:0 auto;padding:100px 0 80px}
+.toc{position:sticky;top:92px;align-self:start}
+.toc h3{font-family:var(--f-display);font-size:1.15rem;font-weight:560;margin-bottom:14px}
+.toc a{display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-left:2px solid var(--line);color:var(--ink-2);font-size:.92rem;text-decoration:none;transition:all .3s}
+.toc a:hover{color:var(--ink);border-color:var(--ink-2)}
+/* .now = capítulo atual (o jQuery detecta no scroll e adiciona) */
+.toc a.now{color:var(--terra);border-color:var(--terra);font-weight:600}
+.toc a i{font-style:normal;font-family:var(--f-mono);font-size:10px;color:var(--terra);flex:none}
+/* .taken = capítulo marcado como estudado (toggleClass) */
+.toc a.taken .t-name{text-decoration:line-through;opacity:.55}
+.toc .toc-legend{margin-top:16px;font-size:.8rem;color:var(--ink-2);line-height:1.6;border-top:1px solid var(--line);padding-top:14px}
+
+/* ═══ capítulos ═══ */
+.cap{padding:56px 0 30px;border-bottom:1px solid var(--line);max-width:760px}
+.cap-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:10px;flex-wrap:wrap}
+.cap-num{color:var(--terra)}
+/* .done no botão = capítulo estudado (toggleClass com boolean) */
+.cap-done{display:inline-flex;align-items:center;gap:8px;font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  border:1px solid var(--ink);border-radius:999px;padding:8px 16px;transition:all .3s}
+.cap-done svg{width:13px;height:13px}
+.cap-done:hover{background:var(--ink);color:var(--paper)}
+.cap-done.done{background:var(--olive);border-color:var(--olive);color:var(--paper)}
+.cap h2{font-family:var(--f-display);font-weight:540;font-size:clamp(1.7rem,3.4vw,2.5rem);letter-spacing:-.015em;line-height:1.1;margin-bottom:20px}
+.cap h2 em{font-style:italic;color:var(--terra);font-weight:480}
+.cap p{margin-bottom:14px;max-width:64ch}
+.cap p b{font-weight:600}
+.cap .lead{font-family:var(--f-display);font-size:1.18rem;font-weight:420;line-height:1.5}
+
+/* código de exemplo */
+pre.code{background:var(--ink);color:var(--paper);border-radius:6px;padding:18px 20px;margin:18px 0;overflow-x:auto;
+  font-family:var(--f-mono);font-size:12.5px;line-height:1.7;white-space:pre}
+pre.code .c{color:#B9A98F}  /* comentário */
+pre.code .k{color:#E8A87C}  /* destaque */
+/* .m.run = o "elo" da cadeia que está rodando (cap. 9) */
+pre.code .m{color:#9FBF8E;transition:background .3s;border-radius:3px}
+pre.code .m.run{background:var(--terra);color:var(--paper)}
+
+/* caixas de destaque */
+.nota{border-left:3px solid var(--terra);background:var(--card);padding:14px 18px;margin:18px 0;border-radius:0 6px 6px 0;max-width:64ch}
+.nota .n-t{font-family:var(--f-mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--terra);display:block;margin-bottom:6px}
+.nota p{margin:0;font-size:.94rem}
+.deonde{font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;color:var(--ink-2);display:block;margin:-8px 0 16px}
+
+/* ═══ laboratórios ═══ */
+.lab{background:var(--card);border:1px solid var(--ink);border-radius:8px;margin:26px 0;overflow:hidden}
+.lab-head{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--ink);color:var(--terra)}
+.lab-head svg{width:15px;height:15px}
+.lab-body{padding:20px 18px}
+.bt{display:inline-flex;align-items:center;gap:7px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  border:1px solid var(--ink);border-radius:999px;padding:9px 15px;transition:all .25s;background:var(--paper)}
+.bt:hover{background:var(--ink);color:var(--paper)}
+.bt:hover svg{color:var(--paper)}
+.bt svg{width:13px;height:13px;color:var(--terra)}
+.bt[disabled]{opacity:.45;pointer-events:none}
+.bt-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+
+/* console de saída dos labs (as .ln são criadas via $('<span>')) */
+.console{background:var(--ink);color:var(--paper);font-family:var(--f-mono);font-size:11.5px;line-height:1.8;
+  padding:14px 16px;min-height:110px;max-height:230px;overflow-y:auto;border-top:1px solid var(--ink)}
+.console .ln{display:block;white-space:pre-wrap;word-break:break-word}
+.console .ok{color:#A7C08B} .console .err{color:#E08763} .console .warn{color:#E4C37E} .console .dim{color:#B9A98F}
+
+/* ═══ demos específicas ═══ */
+/* prateleira de seletores (.sel é adicionada pelo jQuery no cap. 2) */
+.prateleira{display:flex;gap:10px;flex-wrap:wrap;padding:16px;background:var(--paper-2);border:1px dashed var(--line);border-radius:6px;margin-bottom:16px}
+.prateleira>div{border:1px solid var(--ink);border-radius:6px;padding:10px 14px;background:var(--card);font-family:var(--f-mono);font-size:12px;transition:all .3s}
+.prateleira .sel{outline:3px solid var(--terra);outline-offset:2px;transform:scale(1.06);background:var(--paper)}
+/* listas da delegação (.ouvido = item que respondeu ao clique) */
+.dupla{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.coluna{border:1px solid var(--line);border-radius:6px;padding:14px;background:var(--paper)}
+.coluna h4{font-family:var(--f-display);font-size:1.02rem;font-weight:560;margin-bottom:10px}
+.coluna ul{list-style:none;margin-bottom:10px}
+.coluna li{padding:9px 12px;border:1px solid var(--line);border-radius:5px;margin-bottom:7px;cursor:pointer;font-size:.9rem;transition:all .25s;background:var(--card)}
+.coluna li:hover{border-color:var(--ink)}
+.coluna li.ouvido{background:rgba(95,107,60,.16);border-color:var(--olive)}
+.coluna .nota{margin:0;font-size:.78rem;font-family:var(--f-mono);color:var(--ink-2);border:none;background:none;padding:0}
+/* ficha de manipulação do cap. 4 */
+.ficha{display:grid;grid-template-columns:150px 1fr;gap:16px;border:1px solid var(--ink);border-radius:6px;padding:16px;background:var(--paper);margin-bottom:16px}
+.ficha img{width:150px;height:100px;object-fit:cover;border:1px solid var(--line);border-radius:4px;transition:opacity .4s}
+.ficha h4{font-family:var(--f-display);font-weight:560;font-size:1.15rem}
+.ficha input{width:100%;border:1px solid var(--line);border-radius:5px;padding:8px 10px;font-family:inherit;background:var(--card);color:var(--ink);margin-top:8px}
+/* alvo das classes do cap. 5 (.destaque alternada via toggleClass) */
+.alvo-classe{border:1px solid var(--ink);border-radius:6px;padding:18px;background:var(--paper);max-width:320px;margin-bottom:16px;transition:all .4s var(--ease);font-family:var(--f-display)}
+.alvo-classe.destaque{border:2px solid var(--terra);background:rgba(188,75,36,.09);color:var(--terra)}
+/* pista de animação do cap. 6 (o #bola é movido pelo .animate()) */
+.pista{position:relative;height:96px;background:var(--paper-2);border:1px dashed var(--line);border-radius:6px;margin-bottom:16px;overflow:hidden}
+#bola{position:absolute;left:8%;top:50%;translate:0 -50%;width:52px;height:52px;border-radius:50%;
+  background:var(--corn);border:1px solid var(--ink);box-shadow:inset -4px -6px 0 rgba(41,30,18,.18)}
+/* encadeamento do cap. 9 (.pronto adicionada na cadeia) */
+.enc-alvo{border:1px solid var(--ink);border-radius:6px;padding:14px 18px;display:inline-block;margin-bottom:14px;background:var(--paper);transition:opacity .5s;font-family:var(--f-display);font-size:1.05rem}
+.enc-alvo.pronto{border-color:var(--olive);background:rgba(95,107,60,.14)}
+/* contador fantasma do cap. 10 (o texto vem do .text() no step) */
+.ghost-wrap{display:flex;gap:22px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+#ghost-num{font-family:var(--f-display);font-weight:560;font-size:4.2rem;line-height:1;min-width:150px;font-variant-numeric:tabular-nums}
+
+/* quiz (.certa / .errada adicionadas pelo jQuery ao responder) */
+.quiz{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:16px 18px;margin-top:22px;max-width:640px}
+.quiz .q{font-family:var(--f-display);font-weight:540;font-size:1.05rem;margin-bottom:12px}
+.quiz button{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:6px;padding:10px 14px;margin-bottom:8px;font-size:.92rem;background:var(--paper);transition:all .25s;font-family:var(--f-mono);font-size:12px}
+.quiz button:hover{border-color:var(--ink)}
+.quiz button.certa{border-color:var(--olive);background:rgba(95,107,60,.15)}
+.quiz button.errada{border-color:var(--terra);background:rgba(188,75,36,.1)}
+.quiz .qf{display:block;min-height:18px;color:var(--terra);letter-spacing:.06em;text-transform:none}
+
+/* tabela mestra */
+#tabela{max-width:760px;padding:60px 0}
+#tabela h2{font-family:var(--f-display);font-weight:540;font-size:clamp(1.7rem,3.4vw,2.4rem);margin-bottom:8px}
+#tabela .sub{color:var(--ink-2);margin-bottom:26px}
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+th{font-family:var(--f-mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--terra);text-align:left;padding:10px 12px;border-bottom:2px solid var(--ink)}
+td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+td.api{font-family:var(--f-mono);font-size:12px;color:var(--ink)}
+td.onde{font-family:var(--f-mono);font-size:11px;color:var(--ink-2);white-space:nowrap}
+tbody tr:hover{background:var(--card)}
+
+/* reveals (mesma técnica do site: .in adicionada no scroll) */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+
+.guia-foot{border-top:1px solid var(--line);padding:34px 0 60px;max-width:760px}
+.guia-foot p{color:var(--ink-2);font-size:.9rem;margin-bottom:14px}
+
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;padding-top:86px}
+  .toc{position:static;display:flex;flex-wrap:wrap;gap:2px}
+  .toc h3{width:100%}
+  .toc a{border:1px solid var(--line);border-radius:99px;padding:5px 12px}
+  .toc a.now{border-color:var(--terra)}
+  .dupla,.ficha{grid-template-columns:1fr}
+  .ficha img{width:100%;height:140px}
+}

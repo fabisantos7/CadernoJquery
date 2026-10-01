@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caderno de Estudos — jQuery no Sabores &amp; Raízes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Instrument+Sans:wght@400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- ═══ CSS do guia (arquivo separado) ═══ -->
+<link rel="stylesheet" href="guia.css">
+</head>
+<body>
+
+<header id="guia-top">
+  <span class="logo">Sabores <em>&amp;</em> Raízes <span class="mono" style="color:var(--ink-2)">— caderno de estudos</span></span>
+  <span id="study-count" class="mono">0/10 capítulos</span>
+  <div id="study-track"><div id="study-bar"></div></div>
+</header>
+<div id="read-bar"></div>
+
+<div class="layout">
+
+  <!-- ═══ ÍNDICE LATERAL (o link ativo é destacado pelo scroll) ═══ -->
+  <nav class="toc" aria-label="Índice do guia">
+    <h3>O que vamos aprender</h3>
+    <a href="#cap-1"><i>01</i><span class="t-name">O que é o $()</span></a>
+    <a href="#cap-2"><i>02</i><span class="t-name">Seletores</span></a>
+    <a href="#cap-3"><i>03</i><span class="t-name">Eventos &amp; delegação</span></a>
+    <a href="#cap-4"><i>04</i><span class="t-name">Manipulação de DOM</span></a>
+    <a href="#cap-5"><i>05</i><span class="t-name">Classes</span></a>
+    <a href="#cap-6"><i>06</i><span class="t-name">Efeitos &amp; animação</span></a>
+    <a href="#cap-7"><i>07</i><span class="t-name">Medidas &amp; scroll</span></a>
+    <a href="#cap-8"><i>08</i><span class="t-name">AJAX &amp; promises</span></a>
+    <a href="#cap-9"><i>09</i><span class="t-name">Encadeamento</span></a>
+    <a href="#cap-10"><i>10</i><span class="t-name">Truques de mestre</span></a>
+    <a href="#tabela"><i>★</i><span class="t-name">Tabela-mestra</span></a>
+    <p class="toc-legend">Deixe o <b>main.js</b> aberto em outra aba do editor. Cada capítulo cita exatamente onde o conceito vive no projeto. Ao terminar um capítulo, marque como estudado — o progresso fica salvo no navegador.</p>
+  </nav>
+
+  <main id="guia">
+
+    <!-- ════════════════ CAP 01 ════════════════ -->
+    <section class="cap reveal" id="cap-1">
+      <div class="cap-head">
+        <span class="cap-num mono">Capítulo 01 — fundamento</span>
+        <button class="cap-done" data-cap="cap-1"><i data-lucide="bookmark"></i><span>Marcar como estudado</span></button>
+      </div>
+      <h2>O que é o <em>$()</em>, afinal?</h2>
+      <p class="lead">O <b>$</b> é só um apelido para a função <b>jQuery()</b>. Ela faz uma coisa só, brilhante: <em class="t">embrulha</em> qualquer coisa e devolve um objeto cheio de superpoderes.</p>
+      <p>O objeto que sai de <b>$()</b> é <b>array-like</b>: parece uma lista (tem <b>.length</b>, e você pega um item com <b>[0]</b>), mas vem com dezenas de métodos prontos. É por isso que dá para escrever <b>$('.x').addClass('y')</b> — você está chamando um método na lista inteira de uma vez.</p>
+      <pre class="code"><span class="c">// As 4 formas de chamar $() — todas aparecem no main.js:</span>
+<span class="k">$('#modal-name')</span>          <span class="c">// 1. seletor CSS → pega elemento(s) da página</span>
+<span class="k">$(el)</span>                    <span class="c">// 2. node nativo → re-embrulha (setPhoto recebeu this)</span>
+<span class="k">$('&lt;div class="toast"&gt;')</span>  <span class="c">// 3. string HTML → CRIA elemento novo em memória</span>
+<span class="k">$({v:0})</span>                 <span class="c">// 4. objeto comum → animável! (capítulo 10)</span>
+
+<span class="c">// array-like: lista de nodes com métodos em cima</span>
+<span class="k">$('.r-row').length</span>       <span class="c">// → 8 (quantos achou)</span>
+<span class="k">$('.r-row')[0]</span>           <span class="c">// → o node DOM puro, sem superpoderes</span>
+
+<span class="c">// ▸ DOCUMENT READY: roda quando o HTML terminou de carregar.
+//   É o envelope de TODO o main.js.</span>
+<span class="k">$(function(){ <span class="c">/* ...todo o site... */</span> });</span></pre>
+      <div class="nota"><span class="n-t">Regra de ouro do projeto</span>
+        <p><b>jQuery orquestra, CSS executa.</b> O JS decide <i>quando</i> (adiciona/remove classes), o CSS decide <i>como</i> (as transitions). O que escapa disso está marcado: .animate() e o loop do cursor.</p></div>
+      <div class="lab">
+        <div class="lab-head"><i data-lucide="flask-conical"></i> Laboratório — sinta as 4 formas</div>
+        <div class="lab-body">
+          <div class="bt-row">
+            <button class="bt" id="d1-a">$('p.demo')</button>
+            <button class="bt" id="d1-b">$('p.demo')[0]</button>
+            <button class="bt" id="d1-c">$('&lt;b&gt;')</button>
+            <button class="bt" id="d1-d">$({v:42})</button>
+          </div>
+          <p class="demo-alvo mono" style="margin-bottom:12px">→ alvo: <b>p.demo</b> (este parágrafo aqui)</p>
+          <div class="console" id="c1-log" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="quiz" data-ok="1">
+        <p class="q">O que <b>$(function(){ ... })</b> faz?</p>
+        <button>Cria um elemento novo na página</button>
+        <button>Executa a função quando o DOM terminou de carregar</button>
+        <button>Recarrega a página inteira</button>
+        <span class="qf mono"></span>
+      </div>
+    </section>
+
+    <!-- ════════════════ CAP 02 ════════════════ -->
+    <section class="cap reveal" id="cap-2">
+      <div class="cap-head">
+        <span class="cap-num mono">Capítulo 02 — encontrar</span>
+        <button class="cap-done" data-cap="cap-2"><i data-lucide="bookmark"></i><span>Marcar como estudado</span></button>
+      </div>
+      <h2>Seletores: <em>encontrar</em> antes de agir</h2>
+      <p class="lead">Todo método jQuery começa com uma pergunta: <em class="t">em quem?</em> O seletor é sintaxe CSS pura — se você sabe CSS, já sabe selecionar.</p>
+      <p>Os que o site usa: <b>#id</b> (um), <b>.classe</b> (vários), <b>a[href^="#"]</b> (atributo que <i>começa com</i>), <b>.reveal:not(.in)</b> (<i>menos</i> os que já têm a classe), <b>#a, #b</b> (lista) e <b>[data-slot]</b> (tem o atributo). E o truque de escopo: <b>$('#pai').find('.filho')</b> busca <i>só dentro</i> do pai.</p>
+      <pre class="code"><span class="c">// do main.js — repare nos 4 estilos diferentes:</span>
+<span class="k">$('a[href^="#"]')</span>        <span class="c">// todo link-âncora (cap. 7)</span>
+<span class="k">$('.reveal:not(.in)')</span>    <span class="c">// quem AINDA não entrou na tela</span>
+<span class="k">$('#cursor-dot, #cursor-ring').remove()</span> <span class="c">// dois de uma vez</span>
+<span class="k">$('.js-photo[data-slot]')</span> <span class="c">// imgs que têm o atributo</span></pre>
+      <div class="lab">
+        <div class="lab-head"><i data-lucide="flask-conical"></i> Laboratório — dispare seletores na prateleira</div>
+        <div class="lab-body">
+          <div class="prateleira" id="lab-prat">
+            <div class="ingrediente" id="alho" data-cor="branco">alho</div>
+            <div class="ingrediente tempero" id="pimenta" data-cor="vermelho">pimenta</div>
+            <div class="ingrediente tempero" id="sal" data-cor="branco">sal</div>
+            <div class="ingrediente" id="mandioca" data-cor="marrom">mandioca</div>
+            <div class="utensilio" id="panela">panela</div>
+          </div>
+          <div class="bt-row">
+            <button class="bt" data-sel=".ingrediente">.ingrediente</button>
+            <button class="bt" data-sel=".ingrediente.tempero">.ingrediente.tempero</button>
+            <button class="bt" data-sel="#panela">#panela</button>
+            <button class="bt" data-sel="div:not(.tempero)">div:not(.tempero)</button>
+            <button class="bt" data-sel='[data-cor="vermelho"]'>[data-cor="vermelho"]</button>
+            <button class="bt" data-sel=".ingrediente, .utensilio">.ingrediente, .utensilio</button>
+          </div>
+          <div class="console" id="c2-log" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="quiz" data-ok="1">
+        <p class="q">Qual seletor pega links cujo <b>href começa</b> com "#"?</p>
+        <button>a[href#]</button>
+        <button>a[href^="#"]</button>
+        <button>a[href*="#"]</button>
+        <span class="qf mono"></span>
+      </div>
+    </section>
+
+    <!-- ════════════════ CAP 03 ════════════════ -->
+    <section class="cap reveal" id="cap-3">
+      <div class="cap-head">
+        <span class="cap-num mono">Capítulo 03 — o conceito mais importante</span>
+        <button class="cap-done" data-cap="cap-3"><i data-lucide="bookmark"></i><span>Marcar como estudado</span></button>
+      </div>
+      <h2>Eventos &amp; <em>delegação</em></h2>
+      <p class="lead"><b>.on('click', fn)</b> conecta um evento a um elemento. Fácil. O assunto sério é outro: <em class="t">e quando o elemento nascer DEPOIS?</em></p>
+      <p>No site, as 8 linhas do índice nascem via <b>.html()</b> — ou seja, <b>não existiam</b> quando a página carregou. Um bind direto nelas seria em vão. A <b>delegação</b> resolve: você escuta o <b>pai</b> e passa um "filtro". Quando o clique borbulha do filho até o pai, o jQuery checa se o alvo bate com o filtro. Um único listener serve para os filhos de hoje <b>e de sempre</b>.</p>
+      <pre class="code"><span class="c">// ❌ bind direto — rodou ANTES das linhas existirem: não pega nada</span>
+<span class="k">$('.r-row').on('click', fn)</span>
+
+<span class="c">// ✔ DELEGAÇÃO — o #recipe-list (pai) escuta por todas as .r-row,
+//   as de hoje e as de amanhã. Sintaxe: .on(evento, filtro, fn)</span>
+<span class="k">$('#recipe-list').on('click', '.r-row', function(){
+  <span class="c">// $(this) = a linha específica clicada</span>
+  openRecipe($(this).data('id'));
+})</span>
+
+<span class="c">// extras que o site usa:</span>
+<span class="k">e.stopPropagation()</span>  <span class="c">// não deixe o clique subir (salvar ≠ abrir)</span>
+<span class="k">$img.one('load', fn)</span> <span class="c">// dispara UMA vez e se desliga sozinho</span></pre>
+      <div class="lab">
+        <div class="lab-head"><i data-lucide="flask-conical"></i> Laboratório — a prova dos nove</div>
+        <div class="lab-body">
+          <div class="dupla">
+            <div class="coluna">
+              <h4>A. Bind direto</h4>
+              <ul id="lista-direto"><li class="item">Item original A</li><li class="item">Item original B</li></ul>
+              <p class="nota">bind feito uma vez no load: $('#lista-direto .item').on('click', …)</p>
+            </div>
+            <div class="coluna">
+              <h4>B. Delegação</h4>
+              <ul id="lista-deleg"><li class="item">Item original A</li><li class="item">Item original B</li></ul>
+              <p class="nota">$('#lista-deleg').on('click', '.item', …)</p>
+            </div>
+          </div>
+          <div class="bt-row">
+            <button class="bt" id="add-item"><i data-lucide="plus"></i> Adicionar item novo nas duas</button>
+            <button class="bt" id="reset-listas"><i data-lucide="rotate-ccw"></i> Resetar</button>
+          </div>
+          <p class="mono" style="margin-bottom:10px;color:var(--ink-2)">↑ Clique nos itens das duas listas, depois adicione um novo e clique nele também.</p>
+          <div class="console" id="c3-log" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="quiz" data-ok="1">
+        <p class="q">Itens criados depois via <b>.html()</b> não respondem ao bind direto porque…</p>
+        <button>o jQuery os bloqueia por segurança</button>
+        <button>o bind rodou antes deles existirem</button>
+        <button>faltou uma classe CSS neles</button>
+        <span class="qf mono"></span>
+      </div>
+    </section>
+
+    <!-- ════════════════ CAP 04 ════════════════ -->
+    <section class="cap reveal" id="cap-4">
+      <div class="cap-head">
+        <span class="cap-num mono">Capítulo 04 — mudar</span>
+        <button class="cap-done" data-cap="cap-4"><i data-lucide="bookmark"></i><span>Marcar como estudado</span></button>
+      </div>
+      <h2>Manipulação de <em>DOM</em></h2>
+      <p class="lead">Ler e escrever conteúdo, atributos e dados — o dia a dia do <b>openRecipe()</b>, que enche o modal inteiro com <em class="t">seis chamadas seguidas</em>.</p>
+      <p><b>.html()</b> escreve HTML (interpreta tags); <b>.text()</b> escreve texto puro (mostra as tags). <b>.attr()</b> e <b>.val()</b> têm a <b>dualidade getter/setter</b>: sem argumento leem, com argumento escrevem. <b>.data()</b> conversa com os atributos data-*. <b>.append()</b> anexa, <b>.remove()</b> apaga de verdade.</p>
+      <pre class="code"><span class="c">// trecho real do openRecipe() no main.js:</span>
+<span class="k">$('#modal-img').attr('src', foto)</span>     <span class="c">// setter: troca a foto</span>
+<span class="k">$('#modal-name').text(r.name)</span>         <span class="c">// setter: escreve o título</span>
+<span class="k">$('#modal-ingredients').html(lista)</span>   <span class="c">// setter: injeta os &lt;li&gt;</span>
+<span class="k">const v = $('#nl-email').val()</span>        <span class="c">// getter: lê o input</span>
+<span class="k">const id = $(this).data('id')</span>         <span class="c">// getter: lê data-id</span>
+<span class="k">$('#preloader').remove()</span>              <span class="c">// tira do DOM de verdade</span></pre>
+      <div class="lab">
+        <div class="lab-head"><i data-lucide="flask-conical"></i> Laboratório — a ficha maleável</div>
+        <div class="lab-body">
+          <div class="ficha" id="lab-ficha" data-porcoes="4">
+            <img id="f-img" src="https://picsum.photos/seed/sr-guia-a/300/200.jpg" alt="Prato de exemplo">
+            <div>
+              <h4 id="f-titulo">Vatapá da Vó</h4>
+              <p id="f-desc" style="font-size:.9rem;color:var(--ink-2)">Receita de família, anotada a lápis.</p>
+              <span id="f-badge" class="mono" style="color:var(--terra)">rende: ? porções</span>
+              <input id="f-input" placeholder="digite algo e teste o .val()">
+            </div>
+          </div>
+          <div class="bt-row">
+            <button class="bt" id="d4-text">.text() com &lt;b&gt;</button>
+            <button class="bt" id="d4-html">.html() com &lt;b&gt;</button>
+            <button class="bt" id="d4-attr">.attr() troca foto</button>
+            <button class="bt" id="d4-val">.val() lê input</button>
+            <button class="bt" id="d4-data">.data() lê porções</button>
+            <button class="bt" id="d4-rm">.remove() o badge</button>
+            <button class="bt" id="d4-reset"><i data-lucide="rotate-ccw"></i> Resetar</button>
+          </div>
+          <div class="console" id="c4-log" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="quiz" data-ok="0">
+        <p class="q"><b>.attr('src')</b> sem segundo argumento é…</p>
+        <button>um getter — lê o valor atual</button>
+        <button>um setter — apaga a imagem</button>
+        <button>um erro de sintaxe</button>
+        <span class="qf mono"></span>
+      </div>
+    </section>
+
+    <!-- ════════════════ CAP 05 ════════════════ -->
+    <section class="cap reveal" id="cap-5">
+      <div class="cap-head">
+        <span class="cap-num mono">Capítulo 05 — o motor do site</span>
+        <button class="cap-done" data-cap="cap-5"><i data-lucide="bookmark"></i><span>Marcar como estudado</span></button>
+      </div>
+      <h2>Classes: <em>ligar e desligar</em> estados</h2>
+      <p class="lead">Se o site "anda", é por aqui. <b>addClass / removeClass / toggleClass</b> alternam classes de estado que o CSS transforma em movimento — modal abre, drawer desliza, linha salva fica terracota.</p>
+      <p>Dois padrões para gravar: o <b>par "aba ativa"</b> (remove de todos, adiciona no clicado) e o <b>toggle com boolean</b> — o 2º argumento <i>decide</i>, virando um "if" de uma linha. O <b>refreshSaveButtons()</b> do site usa isso para sincronizar os 8 botões de salvar com o caderno.</p>
+      <pre class="code"><span class="c">// padrão "aba ativa" — usado nos filtros de região:</span>
+<span class="k">$('.filter-btn').removeClass('active')</span>  <span class="c">// apaga TODOS</span>
+<span class="k">$(this).addClass('active')</span>              <span class="c">// acende o CLICADO</span>
+
+<span class="c">// toggle CONDICIONAL — o boolean manda:</span>
+<span class="k">$('#site-nav').toggleClass('scrolled', st &gt; 40)</span>
+<span class="k">$(this).toggleClass('saved', notebook.includes(id))</span></pre>
+      <div class="lab">
+        <div class="lab-head"><i data-lucide="flask-conical"></i> Laboratório — o cartão de estados</div>
+        <div class="lab-body">
+          <div class="alvo-classe" id="alvo-classe">Cartão de receita</div>
+          <div class="bt-row">
+            <button class="bt" id="d5-add">.addClass('destaque')</button>
+            <button class="bt" id="d5-rm">.removeClass('destaque')</button>
+            <button class="bt" id="d5-tg">.toggleClass('destaque')</button>
+            <button class="bt" id="d5-tgb">.toggleClass('destaque', boolean)</button>
+          </div>
+          <label class="mono" style="display:flex;gap:8px;align-items:center;color:var(--ink-2)">
+            <input type="checkbox" id="d5-ck" style="accent-color:var(--terra)"> o boolean que o 3º botão vai usar
+          </label>
+          <div class="console" id="c5-log" aria-live="polite" style="margin-top:14px"></div>
+        </div>
+      </div>
+      <div class="quiz" data-ok="1">
+        <p class="q"><b>toggleClass('saved', false)</b> faz o quê?</p>
+        <button>Adiciona a classe duas vezes</button>
+        <button>Garante que a classe está REMOVIDA</button>
+        <button>Não faz nada, é ignorado</button>
+        <span class="qf mono"></span>
+      </div>
+    </section>
+
+    <!-- ════════════════ CAP 06 ════════════════ -->
+    <section class="cap reveal" id="cap-6">
+      <div class="cap-head">
+        <span class="cap-num mono">Capítulo 06 — mover</span>
+        <button class="cap-done" data-cap="cap-6"><i data-lucide="bookmark"></i><span>Marcar como estudado</span></button>
+      </div>
+      <h2>Efeitos &amp; <em>animação</em></h2>
+      <p class="lead">O jQuery anima <em class="t">propriedades numéricas</em> por frame: <b>.animate({left, opacity}, duração)</b>. Para o resto (cores, transforms), o site usa transições CSS — e o jQuery só dispara.</p>
+      <p>Os dois superpoderes daqui: o <b>callback</b> (o código roda <b>quando a animação termina</b> — é assim que o fadeOut do formulário encadeia a mensagem de sucesso) e o <b>.stop(true, true)</b> (limpa a fila e termina a atual na hora — sem ele, cliques rápidos empilham animações "moles").</p>
+      <pre class="code"><span class="c">// sequenciamento com callback — trecho real da newsletter:</span>
+<span class="k">$('#nl-form').fadeOut(200, function(){
+  $('#nl-success').addClass('show')  <span class="c">// roda DEPOIS do fade</span>
+})</span>
+
+<span class="c">// entrada em cascata dos filtros (com o PATCH P2 aplicado):</span>
+<span class="k">$r.addClass('in').css({display:'', opacity:0, transition:'none'})
+  .animate({opacity:1}, 320, function(){ $r.css('transition','') })</span></pre>
+      <div class="lab">
+        <div class="lab-head"><i data-lucide="flask-conical"></i> Laboratório — o pão de queijo viajante</div>
+        <div class="lab-body">
+          <div class="pista"><div id="bola"></div></div>
+          <div class="bt-row">
+            <button class="bt" id="d6-ir">.animate() atravessar</button>
+            <button class="bt" id="d6-op">.animate() opacity</button>
+            <button class="bt" id="d6-stop">.stop(true, true)</button>
+            <button class="bt" id="d6-fade">.fadeOut + callback</button>
+            <button class="bt" id="d6-reset"><i data-lucide="rotate-ccw"></i> Resetar</button>
+          </div>
+          <p class="mono" style="margin-bottom:10px;color:var(--ink-2)">↑ Dica: clique "atravessar" e aperte STOP no meio do caminho.</p>
+          <div class="console" id="c6-log" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="quiz" data-ok="1">
+        <p class="q">No <b>.fadeOut(200, fn)</b>, quando o <b>fn</b> roda?</p>
+        <button>Junto com o começo do fade</button>
+        <button>Quando o fade TERMINA</button>
+        <button>200ms antes do fade</button>
+        <span class="qf mono"></span>
+      </div>
+    </section>
+
+    <!-- ════════════════ CAP 07 ════════════════ -->
+    <section class="cap reveal" id="cap-7">
+      <div class="cap-head">
+        <span class="cap-num mono">Capítulo 07 — medir</span>
+        <button class="cap-done" data-cap="cap-7"><i data-lucide="bookmark"></i><span>Marcar como estudado</span></button>
+      </div>
+      <h2>Medidas &amp; <em>scroll</em></h2>
+      <p class="lead">Barra de leitura, reveals, contadores, âncoras suaves — tudo começa com <em class="t">geometria</em>: onde estou, onde a página termina, onde o elemento está.</p>
+      <p>Atenção à dualidade: <b>.scrollTop()</b> sem argumento <b>lê</b> a posição da rolagem; <b>.scrollTop(0)</b> <b>vai até</b> a posição (o modal usa isso para resetar). E <b>.offset().top</b> é a distância do elemento <b>ao topo do documento</b> — o número exato que o scrollTop precisa para chegar lá.</p>
+      <pre class="code"><span class="c">// a âncora suave — técnica clássica (main.js, "ÂNCORAS SUAVES"):</span>
+<span class="k">$('a[href^="#"]').on('click', function(e){
+  const href = $(this).attr('href')
+  if(href.length &gt; 1 &amp;&amp; $(href).length){      <span class="c">// destino existe?</span>
+    e.preventDefault()                          <span class="c">// cancela o salto bruto</span>
+    $('html,body').animate(
+      { scrollTop: $(href).offset().top - 55 }, 850)  <span class="c">// -55: nav fixa</span>
+  }
+})</span>
+<span class="c">// 'html,body' cobre navegadores que animam um OU outro</span></pre>
+      <div class="nota"><span class="n-t">Performance</span>
+        <p>O scroll dispara dezenas de vezes por segundo. O site usa a flag <b>ticking</b> + <b>requestAnimationFrame</b>: no máximo 1 cálculo por frame. Guarde esse par.</p></div>
+      <div class="lab">
+        <div class="lab-head"><i data-lucide="flask-conical"></i> Laboratório — a régua viva</div>
+        <div class="lab-body">
+          <div class="bt-row">
+            <button class="bt" id="d7-medir"><i data-lucide="ruler"></i> Medir agora</button>
+            <button class="bt" id="d7-ir">Rolar até a Tabela-mestra</button>
+          </div>
+          <div class="console" id="c7-log" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="quiz" data-ok="0">
+        <p class="q">Por que <b>$('html,body')</b> no scroll suave?</p>
+        <button>Para cobrir navegadores que animam um ou outro</button>
+        <button>Para rolar duas vezes mais rápido</button>
+        <button>Porque .animate() exige dois elementos</button>
+        <span class="qf mono"></span>
+      </div>
+    </section>
+
+    <!-- ════════════════ CAP 08 ════════════════ -->
+    <section class="cap reveal" id="cap-8">
+      <div class="cap-head">
+        <span class="cap-num mono">Capítulo 08 — falar com o mundo</span>
+        <button class="cap-done" data-cap="cap-8"><i data-lucide="bookmark"></i><span>Marcar como estudado</span></button>
+      </div>
+      <h2>AJAX &amp; <em>promises</em></h2>
+      <p class="lead">É o sistema de fotos do site. <b>$.ajax()</b> pede dados a um servidor e devolve uma <b>promise</b> — um "recibo" com promessa de valor: <b>.done()</b> quando chega, <b>.fail()</b> se der errado, <b>.always()</b> em qualquer caso.</p>
+      <p>O <b>$.when(p1, p2, …)</b> espera <b>várias</b> promises ao mesmo tempo. Como as nossas vivem num array, usamos <b>$.when.apply($, jobs)</b> para espalhá-las como argumentos. E o <b>$.Deferred()</b> cria uma promise <i>nossa</i> — o site resolve todas as fotos e só então avisa o resto do código com <b>.then()</b>.</p>
+      <pre class="code"><span class="c">// FONTE A do sistema de fotos (main.js) — em lote:</span>
+<span class="k">$.ajax({
+  url: 'https://pt.wikipedia.org/w/api.php', dataType: 'json',
+  data: { action:'query', format:'json', origin:'*', <span class="c">// origin:* = libera CORS</span>
+          prop:'pageimages', pithumbsize:1200,
+          titles: 'Vatapá|Tacacá|Barreado' }  <span class="c">// lote: 1 requisição</span>
+}).done(function(resp){ <span class="c">/* parseThumbs extrai as URLs */</span> })
+  .fail(function(){ <span class="c">/* segue com os fallbacks */</span> })
+
+<span class="c">// blindagem: uma API cair não derruba as outras</span>
+<span class="k">jobs.map(j =&gt; j.then(d =&gt; d, () =&gt; null))</span></pre>
+      <div class="lab">
+        <div class="lab-head"><i data-lucide="flask-conical"></i> Laboratório — busca REAL na Wikipédia</div>
+        <div class="lab-body">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px">
+            <input id="ajax-q" placeholder="ex.: Moqueca" style="border:1px solid var(--line);border-radius:6px;padding:9px 12px;font-family:inherit;background:var(--paper);color:var(--ink);flex:1;min-width:160px">
+            <button class="bt" id="ajax-go"><i data-lucide="search"></i> Buscar foto</button>
+          </div>
+          <div class="bt-row">
+            <button class="bt ajax-chip">Vatapá</button>
+            <button class="bt ajax-chip">Feijoada</button>
+            <button class="bt ajax-chip">Tacacá</button>
+            <button class="bt ajax-chip">Pão de queijo</button>
+          </div>
+          <img id="ajax-img" src="" alt="Foto do artigo" style="width:100%;max-width:340px;aspect-ratio:16/9;object-fit:cover;border:1px solid var(--ink);border-radius:6px;background:var(--paper-2);transition:opacity .5s;margin-bottom:6px">
+          <p class="mono" id="ajax-tit" style="color:var(--ink-2);margin-bottom:12px"></p>
+          <div class="console" id="c8-log" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="quiz" data-ok="1">
+        <p class="q"><b>$.when(p1, p2)</b> resolve quando…</p>
+        <button>a primeira promise resolver</button>
+        <button>TODAS resolverem (ou uma falhar)</button>
+        <button>nunca resolve, só encadeia</button>
+        <span class="qf mono"></span>
+      </div>
+    </section>
+
+    <!-- ════════════════ CAP 09 ════════════════ -->
+    <section class="cap reveal" id="cap-9">
+      <div class="cap-head">
+        <span class="cap-num mono">Capítulo 09 — estilo de escrita</span>
+        <button class="cap-done" data-cap="cap-9"><i data-lucide="bookmark"></i><span>Marcar como estudado</span></button>
+      </div>
+      <h2>Encadeamento: <em>a assinatura do jQuery</em></h2>
+      <p class="lead">Quase todo método jQuery <em class="t">devolve o próprio objeto</em> — por isso dá para emendar um atrás do outro como contas de matemática.</p>
+      <p>No site isso aparece em toda parte, mas o campeão é o botão de salvar do modal: três operações em uma expressão. Ler encadeamento tem um truque: leia da esquerda para a direita, cada elo fala com o resultado do anterior.</p>
+      <pre class="code"><span class="c">// main.js — syncModalSave(): três métodos, uma linha:</span>
+<span class="k">$('#modal-save')
+  .toggleClass('is-saved', saved)  <span class="c">// 1. estado visual</span>
+  .data('id', id)                  <span class="c">// 2. grava qual receita sou (setter!)</span>
+  .html(interno)                   <span class="c">// 3. troca o conteúdo do botão</span></span>
+
+<span class="c">// e o setPhoto() devolve $img justamente para permitir:</span>
+<span class="k">setPhoto($('#modal-img'), src, fb).attr('alt', nome)</span></pre>
+      <div class="lab">
+        <div class="lab-head"><i data-lucide="flask-conical"></i> Laboratório — a esteira passo a passo</div>
+        <div class="lab-body">
+          <pre class="code" id="enc-code">$alvo<span class="m">.css({opacity:.4})</span><span class="m">.addClass('pronto')</span><span class="m">.text('Bolo no forno!')</span></pre>
+          <div class="enc-alvo" id="enc-alvo">Bolo</div>
+          <div class="bt-row" style="margin-top:12px">
+            <button class="bt" id="d9-run"><i data-lucide="play"></i> Rodar cadeia</button>
+            <button class="bt" id="d9-reset"><i data-lucide="rotate-ccw"></i> Resetar</button>
+          </div>
+          <div class="console" id="c9-log" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="quiz" data-ok="0">
+        <p class="q">O encadeamento funciona porque…</p>
+        <button>os métodos retornam o próprio objeto jQuery</button>
+        <button>o CSS é rápido o bastante</button>
+        <button>cada método cria um clone do elemento</button>
+        <span class="qf mono"></span>
+      </div>
+    </section>
+
+    <!-- ════════════════ CAP 10 ════════════════ -->
+    <section class="cap reveal" id="cap-10">
+      <div class="cap-head">
+        <span class="cap-num mono">Capítulo 10 — nível avançado</span>
+        <button class="cap-done" data-cap="cap-10"><i data-lucide="bookmark"></i><span>Marcar como estudado</span></button>
+      </div>
+      <h2>Truques de <em>mestre</em></h2>
+      <p><b>① O objeto fantasma.</b> O <b>.animate()</b> não precisa de elemento! Ele anima números de <b>qualquer objeto</b>. O site cria <b>$({v:0})</b> e anima até 142 — o callback <b>step</b> roda a cada frame escrevendo o valor no HTML. É assim que os contadores do manifesto funcionam.</p>
+      <p><b>② Quando o jQuery NÃO serve.</b> O evento <b>error</b> das imagens <b>não borbulha</b> — e a delegação depende de borbulhamento. Por isso o fallback de fotos é um listener <b>nativo</b> em capture phase (o <i>true</i> de 3º argumento intercepta na descida). Saber a hora de trocar de ferramenta faz parte.</p>
+      <pre class="code"><span class="c">// ① objeto fantasma (main.js, contadores):</span>
+<span class="k">$({v:0}).animate({v: target}, {
+  duration: 1600, easing: 'swing',
+  step: function(now){ $el.text(Math.round(now)) },  <span class="c">// a cada frame</span>
+  complete: function(){ $el.text(target) }
+})</span>
+
+<span class="c">// ② capture phase — error não borbulha, delegação não pega:</span>
+<span class="k">document.addEventListener('error', function(e){
+  <span class="c">// consome o próximo fallback da fila data-fallbacks</span>
+}, true)  <span class="c">// ← true = CAPTURE (intercepta na descida)</span></span></pre>
+      <div class="nota"><span class="n-t">Divisão de trabalho no projeto</span>
+        <p><b>jQuery:</b> seletores, eventos, DOM, classes, .animate, AJAX. <b>Nativo:</b> requestAnimationFrame, localStorage, matchMedia, Array/String methods, o listener de error. Nenhum é "melhor" — são parceiros.</p></div>
+      <div class="lab">
+        <div class="lab-head"><i data-lucide="flask-conical"></i> Laboratório — veja o fantasma por dentro</div>
+        <div class="lab-body">
+          <div class="ghost-wrap">
+            <span id="ghost-num">0</span>
+            <button class="bt" id="d10-run"><i data-lucide="play"></i> Animar {v:0} → {v:100}</button>
+          </div>
+          <p class="mono" style="color:var(--ink-2);margin-bottom:8px">↑ O número grande É o texto do HTML; as linhas do console são amostras do objeto invisível {v}.</p>
+          <div class="console" id="c10-log" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="quiz" data-ok="1">
+        <p class="q"><b>$({v:0}).animate({v:100})</b> anima…</p>
+        <button>um elemento DOM escondido</button>
+        <button>um objeto comum, sem tocar no DOM</button>
+        <button>uma promise pendente</button>
+        <span class="qf mono"></span>
+      </div>
+    </section>
+
+    <!-- ════════════════ TABELA-MESTRA ════════════════ -->
+    <section id="tabela" class="reveal">
+      <h2>Tabela-mestra <em style="color:var(--terra);font-style:italic">— tudo o que o site usa</em></h2>
+      <p class="sub">Guarde esta página nos favoritos: é o currículo completo de jQuery do projeto. As localizações citam o <b>main.js</b>.</p>
+      <table>
+        <thead><tr><th>Categoria</th><th>API</th><th>Onde vive</th><th>Para quê</th></tr></thead>
+        <tbody>
+          <tr><td>Ready</td><td class="api">$(fn)</td><td class="onde">envelope geral</td><td>rodar após o DOM carregar</td></tr>
+          <tr><td rowspan="6">Seletores</td><td class="api">$('#id') / $('.classe')</td><td class="onde">em todo lugar</td><td>localizar elementos</td></tr>
+          <tr><td class="api">[href^="#"]</td><td class="onde">âncoras suaves</td><td>atributo "começa com"</td></tr>
+          <tr><td class="api">:not(.in) / :not(.done)</td><td class="onde">onScroll</td><td>excluir já-processados</td></tr>
+          <tr><td class="api">[data-slot]</td><td class="onde">applyStaticPhotos</td><td>tem o atributo</td></tr>
+          <tr><td class="api">$('#a, #b')</td><td class="onde">cursor mobile</td><td>lista de seletores</td></tr>
+          <tr><td class="api">$('#pai').find('.x')</td><td class="onde">escopo de busca</td><td>busca só dentro do pai</td></tr>
+          <tr><td rowspan="3">Eventos</td><td class="api">.on('click|submit|scroll|keydown|mousemove|input')</td><td class="onde">~20 pontos</td><td>todos os listeners</td></tr>
+          <tr><td class="api">.on(evt, '.filho', fn)</td><td class="onde">índice, caderno, cursor</td><td>DELEGAÇÃO p/ elementos dinâmicos</td></tr>
+          <tr><td class="api">.one('load', fn)</td><td class="onde">setPhoto</td><td>dispara 1× e se desliga</td></tr>
+          <tr><td rowspan="5">DOM</td><td class="api">.html() / .text()</td><td class="onde">render, modal, toasts</td><td>escrever HTML / texto puro</td></tr>
+          <tr><td class="api">.attr() / .val() / .data()</td><td class="onde">modal, fotos, formulário</td><td>getter+setter de atributos/valores</td></tr>
+          <tr><td class="api">.append() / .remove()</td><td class="onde">toasts, preloader</td><td>inserir / apagar de verdade</td></tr>
+          <tr><td class="api">.scrollTop(0) / .scrollTop()</td><td class="onde">modal / onScroll</td><td>setter / getter de rolagem</td></tr>
+          <tr><td class="api">.offset().top / .height()</td><td class="onde">âncoras, reveals</td><td>geometria da página</td></tr>
+          <tr><td>Classes</td><td class="api">.addClass / .removeClass / .toggleClass(cls, bool)</td><td class="onde">todos os estados</td><td>ligar/desligar o CSS</td></tr>
+          <tr><td rowspan="3">Efeitos</td><td class="api">.animate(props, dur, cb)</td><td class="onde">filtros, scroll, contadores</td><td>animação por frame</td></tr>
+          <tr><td class="api">.fadeOut(dur, cb) / .hide()</td><td class="onde">newsletter, filtros</td><td>sequenciar / esconder</td></tr>
+          <tr><td class="api">.stop(true, true)</td><td class="onde">applyFilter</td><td>limpar fila de animações</td></tr>
+          <tr><td rowspan="3">AJAX</td><td class="api">$.ajax + .done/.fail/.always</td><td class="onde">sistema de fotos</td><td>requisições HTTP</td></tr>
+          <tr><td class="api">$.when.apply($, jobs)</td><td class="onde">resolveImages</td><td>esperar N promises</td></tr>
+          <tr><td class="api">$.Deferred().promise()</td><td class="onde">resolveImages</td><td>promise própria encapsulada</td></tr>
+          <tr><td>Extras</td><td class="api">$({obj}).animate + .index()</td><td class="onde">contadores / quiz deste guia</td><td>animar objeto comum / posição do irmão</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer class="guia-foot">
+      <p>Estudou tudo? Abra o <b>index.html</b>, passe o cursor pelo índice de receitas e tente apontar qual método jQuery está agindo em cada segundo do que você vê. Quando conseguir, você não só entendeu o projeto — você sabe jQuery.</p>
+      <button class="bt" id="reset-progress"><i data-lucide="rotate-ccw"></i> Resetar progresso de estudo</button>
+    </footer>
+
+  </main>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<!-- ═══ Nota: o script do guia continua embutido aqui embaixo.
+     Se quiser separá-lo também, é só mover para js/guia.js ═══ -->
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CADERNO DE ESTUDOS — o guia USA o jQuery que ensina.
+   Cada função aqui espelha uma técnica do main.js.
+   ═══════════════════════════════════════════════════════════════ */
+ $(function(){
+  function icons(){ if(window.lucide){ lucide.createIcons(); } }
+  icons();
+
+  /* ── console dos labs: log colorido + auto-scroll ── */
+  function logTo(id, msg, cls){
+    const $c = $('#' + id);
+    const $l = $('<span class="ln ' + (cls||'') + '">').text(msg);
+    $c.append($l);
+    $c[0].scrollTop = $c[0].scrollHeight; // nativo: roda o console pro fim
+  }
+
+  /* ═══ CAP 1 — as 4 formas de $() ═══ */
+  $('#d1-a').on('click', function(){
+    const $f = $('p.demo');
+    logTo('c1-log', "$('p.demo') → objeto jQuery com " + $f.length + " item(ns). Tem .length e métodos — mas não é um array!", 'ok');
+  });
+  $('#d1-b').on('click', function(){
+    const node = $('p.demo')[0];
+    logTo('c1-log', "$('p.demo')[0] → node DOM puro: <" + node.tagName.toLowerCase() + "> — sem métodos jQuery, mas com propriedades nativas.", 'ok');
+  });
+  $('#d1-c').on('click', function(){
+    const $n = $('<b>nasci agora</b>');
+    logTo('c1-log', "$('<b>nasci agora</b>') → elemento CRIADO em memória (length = " + $n.length + "). Está na página? Ainda não — falta o .append() (cap. 4).", 'ok');
+  });
+  $('#d1-d').on('click', function(){
+    const $o = $({v:42});
+    logTo('c1-log', "$({v:42}) → nem é elemento! É um objeto comum embrulhado. Animável — vai virar o 'objeto fantasma' do capítulo 10.", 'warn');
+  });
+
+  /* ═══ CAP 2 — prateleira de seletores (com ESCOPO via .find) ═══ */
+  $('#guia').on('click', '#cap-2 [data-sel]', function(){
+    const sel = $(this).data('sel');
+    const $achou = $('#lab-prat').find(sel); // .find = escopo: busca só DENTRO da prateleira
+    $('#lab-prat > div').removeClass('sel');
+    $achou.addClass('sel');
+    const nomes = $achou.map(function(){ return this.id; }).get().join(', ') || '—';
+    logTo('c2-log', "$('#lab-prat').find('" + sel + "') → " + $achou.length + " elemento(s): " + nomes, 'ok');
+  });
+
+  /* ═══ CAP 3 — direto vs delegação ═══ */
+  function bindDireto(){
+    // bind DIRETO: pega só quem existe NESTE momento
+    $('#lista-direto .item').on('click', function(){
+      $('#lista-direto .item').removeClass('ouvido');
+      $(this).addClass('ouvido');
+      logTo('c3-log', 'A (direto) ✔ — ouviram: "' + $(this).text() + '"', 'ok');
+    });
+  }
+  function bindDeleg(){
+    // bind DELEGADO: o PAI escuta por todos, presentes e futuros
+    $('#lista-deleg').on('click', '.item', function(){
+      $('#lista-deleg .item').removeClass('ouvido');
+      $(this).addClass('ouvido');
+      logTo('c3-log', 'B (delegado) ✔ — o pai ouviu por "' + $(this).text() + '"', 'ok');
+    });
+  }
+  let contador = 0;
+  function resetListas(){
+    const origem = '<li class="item">Item original A</li><li class="item">Item original B</li>';
+    $('#lista-direto').html(origem);
+    $('#lista-deleg').html(origem);
+    bindDireto();  // ← o direto PRECISA ser refeito (olhe: eu o chamei de novo!)
+    // o delegado NÃO precisa: continua valendo para os filhos novos
+    logTo('c3-log', '↺ listas restauradas. Note: só o bind DIRETO foi refeito — o delegado nem se mexeu.', 'dim');
+  }
+  resetListas();
+  $('#add-item').on('click', function(){
+    contador++;
+    $('#lista-direto').append('<li class="item">Item novo ' + contador + '</li>');
+    $('#lista-deleg').append('<li class="item">Item novo ' + contador + '</li>');
+    logTo('c3-log', '＋ item ' + contador + ' criado via .append() nas duas. Ele nasceu DEPOIS do bind direto… clique nele nas duas colunas.', 'warn');
+  });
+  $('#reset-listas').on('click', resetListas);
+  // mini demo do .one(): dispara 1× e se desliga sozinho
+  $(document).one('click', '#one-btn', function(){
+    logTo('c3-log', '.one() ✔ — disparei 1× e me desliguei sozinho. É o mesmo método do .one("load") do setPhoto.', 'ok');
+  });
+
+  /* ═══ CAP 4 — manipulação ═══ */
+  const FICHA = {
+    titulo:'Vatapá da Vó', desc:'Receita de família, anotada a lápis.',
+    a:'https://picsum.photos/seed/sr-guia-a/300/200.jpg',
+    b:'https://picsum.photos/seed/sr-guia-b/300/200.jpg'
+  };
+  let fotoA = true;
+  $('#d4-text').on('click', function(){
+    $('#f-titulo').text('Serve com <b>café</b>'); // text NÃO interpreta tags
+    logTo('c4-log', "$('#f-titulo').text('Serve com <b>café</b>') → as tags apareceram LITERAIS: text() trata tudo como texto.", 'ok');
+  });
+  $('#d4-html').on('click', function(){
+    $('#f-titulo').html('Serve com <b>café</b>'); // html interpreta
+    logTo('c4-log', "$('#f-titulo').html('Serve com <b>café</b>') → o <b> virou negrito de verdade: html() interpreta tags.", 'ok');
+  });
+  $('#d4-attr').on('click', function(){
+    fotoA = !fotoA;
+    const src = fotoA ? FICHA.a : FICHA.b;
+    $('#f-img').css('opacity', 0).attr('src', src).one('load', function(){ $(this).css('opacity',''); });
+    logTo('c4-log', ".attr('src', …) trocou a foto + .one('load') revelou com fade — exatamente o setPhoto() do site.", 'ok');
+    logTo('c4-log', ".attr('src') SEM argumento leria a URL atual: " + src.slice(0,44) + '…', 'dim');
+  });
+  $('#d4-val').on('click', function(){
+    const v = $('#f-input').val();
+    logTo('c4-log', "$('#f-input').val() → " + (v === '' ? '(vazio — digite algo antes!)' : '"' + v + '"'), v ? 'ok' : 'warn');
+  });
+  $('#d4-data').on('click', function(){
+    logTo('c4-log', "$('#lab-ficha').data('porcoes') → " + $('#lab-ficha').data('porcoes') + " (lido do atributo data-porcoes no HTML)", 'ok');
+    $('#f-badge').text('rende: ' + $('#lab-ficha').data('porcoes') + ' porções');
+  });
+  $('#d4-rm').on('click', function(){
+    $('#f-badge').remove();
+    logTo('c4-log', "$('#f-badge').remove() → sumiu DO DOM (não é display:none; o elemento não existe mais).", 'err');
+  });
+  $('#d4-reset').on('click', function(){
+    $('#f-titulo').text(FICHA.titulo);
+    $('#f-desc').text(FICHA.desc);
+    $('#lab-ficha').find('.mono').remove(); // remove se ainda existir…
+    $('#lab-ficha div div').append('<span id="f-badge" class="mono" style="color:var(--terra)">rende: ? porções</span>');
+    $('#f-input').val('');
+    fotoA = true;
+    $('#f-img').attr('src', FICHA.a);
+    logTo('c4-log', '↺ ficha restaurada (repare: o reset usou .text, .val, .attr, .remove e .append — capítulo inteiro num botão).', 'dim');
+  });
+
+  /* ═══ CAP 5 — classes ═══ */
+  const $alvo5 = $('#alvo-classe');
+  $('#d5-add').on('click', function(){ $alvo5.addClass('destaque');  logTo('c5-log', "$('#alvo-classe').addClass('destaque') — ligado.", 'ok'); });
+  $('#d5-rm').on('click', function(){ $alvo5.removeClass('destaque'); logTo('c5-log', ".removeClass('destaque') — desligado.", 'ok'); });
+  $('#d5-tg').on('click', function(){ $alvo5.toggleClass('destaque'); logTo('c5-log', ".toggleClass('destaque') — inverteu o estado atual.", 'ok'); });
+  $('#d5-tgb').on('click', function(){
+    const quero = $('#d5-ck').prop('checked'); // prop() lê propriedade de formulário
+    $alvo5.toggleClass('destaque', quero);
+    logTo('c5-log', ".toggleClass('destaque', " + quero + ") → o boolean DECIDIU. " + (quero ? 'Ficou ligado.' : 'Ficou desligado.'), 'ok');
+  });
+
+  /* ═══ CAP 6 — efeitos ═══ */
+  const $bola = $('#bola');
+  let naDireita = false, opaco = false;
+  $('#d6-ir').on('click', function(){
+    naDireita = !naDireita;
+    logTo('c6-log', '.animate({left: "' + (naDireita ? '82%' : '8%') + '"}, 1200) — propriedade NUMÉRICA, animada por frame.', 'ok');
+    $bola.animate({ left: naDireita ? '82%' : '8%' }, 1200);
+  });
+  $('#d6-op').on('click', function(){
+    opaco = !opaco;
+    $bola.animate({ opacity: opaco ? .2 : 1 }, 700);
+    logTo('c6-log', '.animate({opacity: ' + (opaco ? '.2' : '1') + '}) — opacity é numérica, então o animate aceita.', 'ok');
+  });
+  $('#d6-stop').on('click', function(){
+    $bola.stop(true, true);
+    logTo('c6-log', '.stop(true, true) → 1º true: limpeza da FILA; 2º true: terminou a atual na hora. Sem isso, cliques rápidos empilham animações moles.', 'warn');
+  });
+  $('#d6-fade').on('click', function(){
+    logTo('c6-log', '.fadeOut(500, callback) iniciado… o callback SÓ roda no fim — aguarde.', 'dim');
+    $bola.fadeOut(500, function(){
+      logTo('c6-log', '✔ callback disparou: o fade TERMINOU. Agora o .fadeIn() dentro dele.', 'ok');
+      $bola.fadeIn(500);
+    });
+  });
+  $('#d6-reset').on('click', function(){
+    $bola.stop(true, true).css({ left:'8%', opacity:1 }).show();
+    naDireita = false; opaco = false;
+    logTo('c6-log', '↺ reset (stop + css + show — três capítulos num botão).', 'dim');
+  });
+
+  /* ═══ CAP 7 — medidas ═══ */
+  $('#d7-medir').on('click', function(){
+    logTo('c7-log', '$(window).scrollTop() → ' + $(window).scrollTop() + 'px (onde a rolagem está)', 'ok');
+    logTo('c7-log', '$(document).height() → ' + $(document).height() + 'px (altura total do documento)', 'ok');
+    logTo('c7-log', "$(window).height() → " + $(window).height() + 'px (altura visível da janela)', 'ok');
+    logTo('c7-log', "$('#cap-7').offset().top → " + Math.round($('#cap-7').offset().top) + 'px (distância deste capítulo AO TOPO DO DOCUMENTO)', 'ok');
+    logTo('c7-log', 'A barra de leitura do guia usa exatamente: (scrollTop / (docHeight − winHeight)) × 100%', 'dim');
+  });
+  $('#d7-ir').on('click', function(){
+    // a técnica EXATA das âncoras do site:
+    $('html,body').animate({ scrollTop: $('#tabela').offset().top - 70 }, 800);
+    logTo('c7-log', "$('html,body').animate({ scrollTop: $('#tabela').offset().top - 70 }, 800) — rolamos usando a própria técnica do capítulo.", 'ok');
+  });
+
+  /* ═══ CAP 8 — AJAX real ═══ */
+  function buscar(q){
+    const $go = $('#ajax-go');
+    $go.prop('disabled', true); // prop() como SETTER: desabilita o botão
+    logTo('c8-log', '→ $.ajax: consultando pt.wikipedia por "' + q + '"…', 'dim');
+    $.ajax({
+      url: 'https://pt.wikipedia.org/w/api.php', dataType: 'json',
+      data: { action:'query', format:'json', origin:'*', redirects:1,
+              prop:'pageimages', piprop:'thumbnail', pithumbsize:600, titles: q }
+    })
+    .done(function(resp){
+      const pages = (resp.query && resp.query.pages) || {};
+      const p = pages[Object.keys(pages)[0]];
+      const src = p && p.thumbnail && p.thumbnail.source;
+      if(!src){ logTo('c8-log', '⚠ .done() chegou, mas o artigo não tem foto. A fila de fallback do site assumiria aqui.', 'warn'); return; }
+      logTo('c8-log', '← .done(): resposta OK. Foto de "' + p.title + '" encontrada.', 'ok');
+      logTo('c8-log', "→ aplicando com .attr('src', …) + .one('load') para o fade-in…", 'dim');
+      const $img = $('#ajax-img').css('opacity', 0);
+      $img.attr('src', src);
+      $img.one('load', function(){ $(this).css('opacity',''); logTo('c8-log', "✔ .one('load') disparou 1× — foto revelada.", 'ok'); });
+      $('#ajax-tit').text('fonte: artigo "' + p.title + '" — wikipédia (como no main.js)');
+    })
+    .fail(function(){
+      logTo('c8-log', '✖ .fail(): a requisição falhou (rede?). No site, os fallbacks assumem sem quebrar nada.', 'err');
+    })
+    .always(function(){
+      $go.prop('disabled', false);
+      logTo('c8-log', '— .always(): rodou com sucesso OU erro (usamos para reabilitar o botão).', 'dim');
+    });
+  }
+  $('#ajax-go').on('click', function(){
+    const q = $.trim($('#ajax-q').val()); // sem drama: aqui é um guia, $.trim continua existindo 🙂
+    if(q){ buscar(q); } else { logTo('c8-log', '⚠ digite um prato primeiro (ou use os atalhos).', 'warn'); }
+  });
+  $('#ajax-q').on('keydown', function(e){ if(e.key === 'Enter'){ $('#ajax-go').trigger('click'); } }); // trigger dispara o handler do botão!
+  $('.ajax-chip').on('click', function(){ $('#ajax-q').val($(this).text()); buscar($(this).text()); });
+
+  /* ═══ CAP 9 — esteira do encadeamento ═══ */
+  const $enc = $('#enc-alvo');
+  function encReset(){
+    $enc.stop(true,true).removeClass('pronto').css('opacity',1).text('Bolo');
+    $('#enc-code .m').removeClass('run');
+  }
+  $('#d9-run').on('click', function(){
+    encReset();
+    const $ms = $('#enc-code .m');
+    logTo('c9-log', '▶ rodando a cadeia… cada elo fala com o resultado do anterior.', 'dim');
+    $ms.eq(0).addClass('run');
+    setTimeout(function(){
+      $enc.css('opacity', .4);
+      logTo('c9-log', '1/3 .css({opacity:.4}) aplicado — e o método DEVOLVEU o objeto, por isso o próximo funciona.', 'ok');
+      $ms.eq(0).removeClass('run'); $ms.eq(1).addClass('run');
+    }, 700);
+    setTimeout(function(){
+      $enc.addClass('pronto');
+      logTo('c9-log', "2/3 .addClass('pronto') aplicado.", 'ok');
+      $ms.eq(1).removeClass('run'); $ms.eq(2).addClass('run');
+    }, 1500);
+    setTimeout(function(){
+      $enc.text('Bolo no forno!');
+      logTo('c9-log', "3/3 .text('Bolo no forno!') aplicado. Cadeia completa — uma expressão, três efeitos.", 'ok');
+      $ms.eq(2).removeClass('run');
+    }, 2300);
+  });
+  $('#d9-reset').on('click', function(){ encReset(); logTo('c9-log', '↺ reset.', 'dim'); });
+
+  /* ═══ CAP 10 — objeto fantasma ═══ */
+  $('#d10-run').on('click', function(){
+    let amostras = 0;
+    logTo('c10-log', '$({v:0}).animate({v:100}, {step, complete}) iniciado — olhe as amostras do objeto invisível:', 'dim');
+    $({v:0}).animate({v:100}, {
+      duration: 1600, easing: 'swing',
+      step: function(now){ // o 1º argumento do step é o valor ATUAL
+        $('#ghost-num').text(Math.round(now));
+        if(amostras < 9){ logTo('c10-log', 'step → v = ' + now.toFixed(2) + '  (o número grande é .text() recebendo isso arredondado)', 'ok'); amostras++; }
+      },
+      complete: function(){ logTo('c10-log', 'complete → v = 100. Valor final garantido — igual aos contadores 142/5/3 do site.', 'ok'); }
+    });
+  });
+
+  /* ═══ QUIZ — feedback correto/errado via toggleClass ═══ */
+  $('#guia').on('click', '.quiz button', function(){
+    const $q = $(this).closest('.quiz');   // .closest(): sobe até o ancestral .quiz
+    const ok = +$q.data('ok');             // gabarito vem do data-ok no HTML
+    const meuIdx = $q.find('button').index(this); // posição da resposta clicada
+    $q.find('button').removeClass('certa errada');
+    if(meuIdx === ok){
+      $(this).addClass('certa');
+      $q.find('.qf').text('✔ Isso! Conceito confirmado.').css('color','var(--olive)');
+    } else {
+      $(this).addClass('errada');
+      $q.find('.qf').text('✖ Quase — releia com calma e tente de novo.').css('color','var(--terra)');
+    }
+  });
+
+  /* ═══ PROGRESSO DE ESTUDO (localStorage + toggle, como o caderno do site) ═══ */
+  const KEY = 'sr-guia-done';
+  let done = [];
+  try{ done = JSON.parse(localStorage.getItem(KEY) || '[]') || []; }catch(e){ done = []; }
+  const TOTAL = $('.cap').length;
+  function renderProgresso(){
+    $('.cap-done').each(function(){
+      const feito = done.indexOf($(this).data('cap')) >= 0;
+      $(this).toggleClass('done', feito)
+             .find('span').text(feito ? 'Estudado ✔' : 'Marcar como estudado');
+    });
+    $('.toc a').each(function(){
+      const href = $(this).attr('href');
+      $(this).toggleClass('taken', done.indexOf(href) >= 0);
+    });
+    $('#study-count').text(done.length + '/' + TOTAL + ' capítulos');
+    $('#study-bar').css('width', (done.length / TOTAL * 100) + '%');
+  }
+  $('#guia').on('click', '.cap-done', function(){
+    const id = $(this).data('cap');
+    if(done.indexOf(id) >= 0){ done = done.filter(function(x){ return x !== id; }); }
+    else { done.push(id); }
+    try{ localStorage.setItem(KEY, JSON.stringify(done)); }catch(e){}
+    renderProgresso();
+  });
+  $('#reset-progress').on('click', function(){
+    done = [];
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    renderProgresso();
+  });
+
+  /* ═══ SCROLL: barra de leitura + reveals + link ativo no índice ═══ */
+  let ticking = false;
+  function onScroll(){
+    const st = $(window).scrollTop();
+    const dh = $(document).height() - $(window).height();
+    $('#read-bar').css('width', (dh > 0 ? (st/dh)*100 : 0) + '%'); // igual ao site
+    $('.reveal:not(.in)').each(function(){
+      if($(this).offset().top < st + $(window).height() * .92){
+        $(this).addClass('in');
+      }
+    });
+    // destaque do capítulo atual no índice
+    let atual = null;
+    $('.cap').each(function(){
+      if($(this).offset().top <= st + 140){ atual = $(this).attr('id'); }
+    });
+    $('.toc a').removeClass('now');
+    if(atual){ $('.toc a[href="#' + atual + '"]').addClass('now'); }
+    ticking = false;
+  }
+  $(window).on('scroll', function(){
+    if(!ticking){ ticking = true; requestAnimationFrame(onScroll); }
+  });
+  onScroll();
+
+  /* âncoras suaves (a mesma técnica do site) */
+  $('a[href^="#"]').on('click', function(e){
+    const href = $(this).attr('href');
+    if(href.length > 1 && $(href).length){
+      e.preventDefault();
+      $('html,body').animate({ scrollTop: $(href).offset().top - 74 }, 700);
+    }
+  });
+
+  /* estado inicial */
+  renderProgresso();
+});
+</script>
+</body>
+</html>
